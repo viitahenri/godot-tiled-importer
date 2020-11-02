@@ -109,7 +109,6 @@ func read_tmx(path):
 					return prop_data
 
 				data.properties = prop_data.properties
-				data.propertytypes = prop_data.propertytypes
 
 		err = parser.read()
 
@@ -158,14 +157,11 @@ func parse_tileset(parser):
 				if typeof(tile_data) != TYPE_DICTIONARY:
 					# Error happened
 					return tile_data
-				if "properties" in tile_data and "propertytypes" in tile_data:
+				if "properties" in tile_data:
 					if not "tileproperties" in data:
 						data.tileproperties = {}
-						data.tilepropertytypes = {}
 					data.tileproperties[str(attr.id)] = tile_data.properties
-					data.tilepropertytypes[str(attr.id)] = tile_data.propertytypes
 					tile_data.erase("tileproperties")
-					tile_data.erase("tilepropertytypes")
 				data.tiles[str(attr.id)] = tile_data
 
 			elif parser.get_node_name() == "image":
@@ -186,7 +182,6 @@ func parse_tileset(parser):
 					return prop_data
 
 				data.properties = prop_data.properties
-				data.propertytypes = prop_data.propertytypes
 
 		err = parser.read()
 
@@ -246,7 +241,6 @@ func parse_tile_data(parser):
 			elif parser.get_node_name() == "properties":
 				var prop_data = parse_properties(parser)
 				data["properties"] = prop_data.properties
-				data["propertytypes"] = prop_data.propertytypes
 
 		err = parser.read()
 
@@ -269,7 +263,6 @@ static func parse_object(parser):
 				if parser.get_node_name() == "properties":
 					var prop_data = parse_properties(parser)
 					data["properties"] = prop_data.properties
-					data["propertytypes"] = prop_data.propertytypes
 
 				elif parser.get_node_name() == "point":
 					data.point = true
@@ -375,7 +368,6 @@ func parse_tile_layer(parser, infinite):
 						return prop_data
 
 					data.properties = prop_data.properties
-					data.propertytypes = prop_data.propertytypes
 
 			err = parser.read()
 
@@ -404,7 +396,6 @@ func parse_object_layer(parser):
 						# Error happened
 						return prop_data
 					data.properties = prop_data.properties
-					data.propertytypes = prop_data.propertytypes
 
 			err = parser.read()
 
@@ -439,7 +430,6 @@ func parse_image_layer(parser):
 						# Error happened
 						return prop_data
 					data.properties = prop_data.properties
-					data.propertytypes = prop_data.propertytypes
 
 			err = parser.read()
 
@@ -495,7 +485,6 @@ func parse_group_layer(parser, infinite):
 						return prop_data
 
 					result.properties = prop_data.properties
-					result.propertytypes = prop_data.propertytypes
 
 			err = parser.read()
 	return result
@@ -506,7 +495,6 @@ static func parse_properties(parser):
 	var err = OK
 	var data = {
 		"properties": {},
-		"propertytypes": {},
 	}
 
 	if not parser.is_empty():
@@ -524,10 +512,6 @@ static func parse_properties(parser):
 						return ERR_INVALID_DATA
 
 					data.properties[prop_data.name] = prop_data.value
-					if prop_data.has("type"):
-						data.propertytypes[prop_data.name] = prop_data.type
-					else:
-						data.propertytypes[prop_data.name] = "string"
 
 			err = parser.read()
 
